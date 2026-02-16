@@ -345,7 +345,7 @@ async function main() {
           process.exit(1);
         }
         
-        result = await memoryCommands.vault(indexService, doctorService, pruneService, vault, trackerService, args);
+        result = await memoryCommands.vault(indexService, doctorService, pruneService, vault, { ...args, tracker: trackerService });
         break;
 
       default:

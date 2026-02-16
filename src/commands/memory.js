@@ -129,9 +129,8 @@ export async function memoryTrackerCommand(tracker, args) {
  * Enables: vault <subcommand> [args...]
  * Vault is an alias for memory commands
  */
-export async function vaultCommand(indexService, doctorService, pruneService, vault, trackerOrArgs, maybeArgs) {
-  const tracker = maybeArgs ? trackerOrArgs : null;
-  const args = maybeArgs || trackerOrArgs;
+export async function vaultCommand(indexService, doctorService, pruneService, vault, args) {
+  const tracker = args.tracker;
   const subcommand = args._[0];
   
   if (!subcommand) {
@@ -170,11 +169,8 @@ export async function vaultCommand(indexService, doctorService, pruneService, va
  * Namespace dispatcher for memory commands (legacy alias)
  * Enables: memory <subcommand> [args...]
  */
-export async function memoryCommand(indexService, doctorService, pruneService, vault, trackerOrArgs, maybeArgs) {
-  if (maybeArgs) {
-    return await vaultCommand(indexService, doctorService, pruneService, vault, trackerOrArgs, maybeArgs);
-  }
-  return await vaultCommand(indexService, doctorService, pruneService, vault, trackerOrArgs);
+export async function memoryCommand(indexService, doctorService, pruneService, vault, args) {
+  return await vaultCommand(indexService, doctorService, pruneService, vault, args);
 }
 
 export default {

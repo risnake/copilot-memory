@@ -840,9 +840,10 @@ describe('Vault Command Routing', () => {
 
   test('should route to vault tracker', async () => {
     const tracker = new TrackerService(config);
-    const result = await vaultCommand(indexService, doctorService, pruneService, vault, tracker, {
+    const result = await vaultCommand(indexService, doctorService, pruneService, vault, {
       _: ['tracker'],
-      phase: 'phase-abc'
+      phase: 'phase-abc',
+      tracker
     });
 
     assert.ok(result.success);

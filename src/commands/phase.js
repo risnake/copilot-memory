@@ -35,7 +35,9 @@ export async function phaseCreateCommand(vault, args, tracker) {
  * Phase research command
  */
 export async function phaseResearchCommand(vault, args, tracker) {
-  const phaseId = await (tracker?.resolvePhaseId(args.phaseId || args.phase) ?? (args.phaseId || args.phase));
+  const phaseId = tracker
+    ? await tracker.resolvePhaseId(args.phaseId || args.phase)
+    : (args.phaseId || args.phase);
   const title = args.title || 'Research Notes';
   
   if (!phaseId) {
@@ -83,7 +85,9 @@ export async function phaseResearchCommand(vault, args, tracker) {
  * Phase handoff command
  */
 export async function phaseHandoffCommand(vault, args, tracker) {
-  const phaseId = await (tracker?.resolvePhaseId(args.phaseId || args.phase) ?? (args.phaseId || args.phase));
+  const phaseId = tracker
+    ? await tracker.resolvePhaseId(args.phaseId || args.phase)
+    : (args.phaseId || args.phase);
   const sessionId = args.sessionId || args.session;
   const title = args.title || 'Phase Handoff';
 
