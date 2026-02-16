@@ -98,17 +98,45 @@ export async function memoryPruneCommand(pruneService, args) {
 }
 
 /**
+ * Deterministic tracker command
+ */
+export async function memoryTrackerCommand(tracker, args) {
+  if (!tracker) {
+    return { success: false, message: 'Tracker service unavailable' };
+  }
+
+  if (args.clearPhase || args['clear-phase']) {
+    const state = await tracker.setActivePhase(null);
+    return { success: true, message: 'Active phase cleared', tracker: state };
+  }
+
+  if (args.phase) {
+    const state = await tracker.setActivePhase(args.phase);
+    return { success: true, message: `Active phase set to ${args.phase}`, tracker: state };
+  }
+
+  if (args.session) {
+    const state = await tracker.setSession(args.session);
+    return { success: true, message: `Session set to ${args.session}`, tracker: state };
+  }
+
+  const trackerState = await tracker.getState();
+  return { success: true, message: 'Tracker state loaded', tracker: trackerState };
+}
+
+/**
  * Namespace dispatcher for vault commands
  * Enables: vault <subcommand> [args...]
  * Vault is an alias for memory commands
  */
 export async function vaultCommand(indexService, doctorService, pruneService, vault, args) {
+  const tracker = args.tracker;
   const subcommand = args._[0];
   
   if (!subcommand) {
     return {
       success: false,
-      message: 'Vault subcommand required. Use: vault index|search|doctor|prune'
+      message: 'Vault subcommand required. Use: vault index|search|doctor|prune|tracker'
     };
   }
 
@@ -127,10 +155,12 @@ export async function vaultCommand(indexService, doctorService, pruneService, va
       return await memoryDoctorCommand(doctorService, subArgs);
     case 'prune':
       return await memoryPruneCommand(pruneService, subArgs);
+    case 'tracker':
+      return await memoryTrackerCommand(tracker, subArgs);
     default:
       return {
         success: false,
-        message: `Unknown vault subcommand: ${subcommand}. Use: index|search|doctor|prune`
+        message: `Unknown vault subcommand: ${subcommand}. Use: index|search|doctor|prune|tracker`
       };
   }
 }
@@ -148,6 +178,7 @@ export default {
   search: memorySearchCommand,
   doctor: memoryDoctorCommand,
   prune: memoryPruneCommand,
+  tracker: memoryTrackerCommand,
   // Namespace dispatchers
   vault: vaultCommand,
   memory: memoryCommand

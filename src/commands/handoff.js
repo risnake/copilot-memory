@@ -31,6 +31,14 @@ export async function handoffCommand(vault, args) {
     tags: args.tags || []
   });
 
+  if (args.tracker) {
+    await args.tracker.setSession(note.frontmatter.session_id || null);
+    await args.tracker.recordHandoff(note);
+    if (phaseId) {
+      await args.tracker.setActivePhase(phaseId);
+    }
+  }
+
   return {
     success: true,
     message: 'Handoff created',
@@ -61,6 +69,14 @@ export async function continuousResumeCommand(vault, args) {
     content: `# Session Resume\n\nResuming from handoff: [[${latestHandoff.path}]]\n\n## Previous Context\n\n${latestHandoff.body.substring(0, 500)}...\n\n## Session Notes\n\n`,
     tags: ['resume']
   });
+
+  if (args.tracker) {
+    await args.tracker.setSession(latestHandoff.frontmatter.session_id || null);
+    await args.tracker.recordHandoff(latestHandoff);
+    if (latestHandoff.frontmatter.phase_id) {
+      await args.tracker.setActivePhase(latestHandoff.frontmatter.phase_id);
+    }
+  }
 
   return {
     success: true,

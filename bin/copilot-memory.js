@@ -6,6 +6,7 @@ import { VaultService } from '../src/services/vault.js';
 import { IndexService } from '../src/services/index.js';
 import { DoctorService } from '../src/services/doctor.js';
 import { PruneService } from '../src/services/prune.js';
+import { TrackerService } from '../src/services/tracker.js';
 import handoffCommands from '../src/commands/handoff.js';
 import phaseCommands from '../src/commands/phase.js';
 import memoryCommands from '../src/commands/memory.js';
@@ -109,6 +110,13 @@ function formatOutput(result) {
       console.log(`  Deleted: ${summary.deleted}`);
       console.log(`  Errors: ${summary.errors}`);
     }
+
+    if (result.tracker) {
+      console.log(`\nTracker:`);
+      console.log(`  Active phase: ${result.tracker.active_phase_id || 'none'}`);
+      console.log(`  Session: ${result.tracker.current_session_id || 'none'}`);
+      console.log(`  Latest handoff: ${result.tracker.latest_handoff_id || 'none'}`);
+    }
   } else {
     console.error(`✗ ${result.message}`);
     process.exit(1);
@@ -133,6 +141,7 @@ Core Commands:
   phase <subcommand> Manage development phases
   vault <subcommand> Manage vault content and health
   help [command]    Show help for a command
+  Aliases: h (handoff), r (resume), p (phase), v (vault)
 
 Phase Subcommands:
   create            Create a new development phase
@@ -144,6 +153,7 @@ Vault Subcommands:
   search <query>    Search vault content
   doctor            Run vault health diagnostics
   prune             Clean up old notes
+  tracker           Show or update deterministic tracker state
 
 Options:
   --vault <path>    Specify vault location (or use COPILOT_MEMORY_VAULT env var)
@@ -162,6 +172,8 @@ Examples:
   copilot-memory vault doctor
   copilot-memory vault index
   copilot-memory vault prune --days 90 --dry-run
+  copilot-memory vault tracker
+  copilot-memory v tracker --phase auth-phase
 
 For more details: https://github.com/yourusername/copilot-memory
 `);
@@ -180,7 +192,8 @@ async function main() {
   }
 
   // Parse top-level command
-  const command = argv[0];
+  const commandAliases = { h: 'handoff', r: 'resume', p: 'phase', v: 'vault' };
+  const command = commandAliases[argv[0]] || argv[0];
   
   // Handle global help flags
   if (command === 'help' || command === '--help' || command === '-h') {
@@ -222,6 +235,7 @@ async function main() {
   const indexService = new IndexService(config, adapter);
   const doctorService = new DoctorService(config, adapter);
   const pruneService = new PruneService(config, adapter);
+  const trackerService = new TrackerService(config);
 
   let result;
 
@@ -275,16 +289,17 @@ async function main() {
 
       case 'handoff':
         await vault.initialize();
-        result = await handoffCommands.handoff(vault, args);
+        result = await handoffCommands.handoff(vault, { ...args, tracker: trackerService });
         break;
 
       case 'resume':
         await vault.initialize();
-        result = await handoffCommands.continuousResume(vault, args);
+        result = await handoffCommands.continuousResume(vault, { ...args, tracker: trackerService });
         break;
 
       case 'phase':
         await vault.initialize();
+        args.tracker = trackerService;
         // Validate subcommand exists
         const phaseSubcommand = args._[0];
         if (!phaseSubcommand) {
@@ -292,8 +307,8 @@ async function main() {
           console.log('\nValid subcommands: create, research, handoff');
           console.log('\nExamples:');
           console.log('  copilot-memory phase create --title "Authentication"');
-          console.log('  copilot-memory phase research --phase <id> --title "Research"');
-          console.log('  copilot-memory phase handoff --phase <id> --title "Complete"');
+          console.log('  copilot-memory phase research --title "Research"');
+          console.log('  copilot-memory phase handoff --title "Complete"');
           process.exit(1);
         }
         
@@ -313,28 +328,30 @@ async function main() {
         const vaultSubcommand = args._[0];
         if (!vaultSubcommand) {
           console.error('Error: vault subcommand required');
-          console.log('\nValid subcommands: index, search, doctor, prune');
+          console.log('\nValid subcommands: index, search, doctor, prune, tracker');
           console.log('\nExamples:');
           console.log('  copilot-memory vault index');
           console.log('  copilot-memory vault search "query"');
           console.log('  copilot-memory vault doctor');
           console.log('  copilot-memory vault prune --days 90');
+          console.log('  copilot-memory vault tracker --phase <id>');
           process.exit(1);
         }
         
         // Validate subcommand is recognized
-        if (!['index', 'search', 'doctor', 'prune'].includes(vaultSubcommand)) {
+        if (!['index', 'search', 'doctor', 'prune', 'tracker'].includes(vaultSubcommand)) {
           console.error(`Error: unknown vault subcommand '${vaultSubcommand}'`);
-          console.log('\nValid subcommands: index, search, doctor, prune');
+          console.log('\nValid subcommands: index, search, doctor, prune, tracker');
           process.exit(1);
         }
         
-        result = await memoryCommands.vault(indexService, doctorService, pruneService, vault, args);
+        result = await memoryCommands.vault(indexService, doctorService, pruneService, vault, { ...args, tracker: trackerService });
         break;
 
       default:
         console.error(`Error: unknown command '${command}'`);
         console.log('\nValid commands: init, handoff, resume, phase, vault, help');
+        console.log('Aliases: h, r, p, v');
         console.log('\nRun \'copilot-memory help\' for more information');
         process.exit(1);
     }
