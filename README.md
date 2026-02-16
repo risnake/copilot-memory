@@ -10,6 +10,7 @@ A memory management system for GitHub Copilot CLI using Obsidian-compatible Mark
 - 🔍 **Content Search**: Full-text search across all vault notes
 - 🏥 **Health Checks**: Validate vault structure and note integrity
 - 🧹 **Pruning**: Clean up old notes to keep the vault manageable
+- 🎯 **Deterministic Tracker**: Store active phase/session/handoff state in `indexes/tracker-state.json`
 - 🔗 **Obsidian Compatible**: Use Obsidian or any Markdown editor alongside the CLI
 - 📦 **Minimal Dependencies**: Zero runtime dependencies, built on Node.js stdlib
 
@@ -74,6 +75,7 @@ copilot-memory vault search "authentication"
 
 # Check vault health
 copilot-memory vault doctor
+copilot-memory vault tracker
 
 # Regenerate indexes
 copilot-memory vault index
@@ -102,6 +104,7 @@ Commands use a simple, flat structure:
 - `copilot-memory vault search` - Search content
 - `copilot-memory vault doctor` - Run health checks
 - `copilot-memory vault prune` - Prune old notes
+- `copilot-memory vault tracker` - Deterministic project state (active phase/session/handoff)
 
 ## Vault Structure
 
@@ -232,7 +235,7 @@ copilot-memory phase research \
 ```
 
 **Options:**
-- `--phase <id>`: Phase ID (required)
+- `--phase <id>`: Phase ID (optional if active phase is set via `vault tracker --phase`)
 - `--title <title>`: Research title
 - `--content <text>`: Content
 - `--stdin`: Read from stdin
@@ -249,7 +252,7 @@ copilot-memory phase handoff \
 ```
 
 **Options:**
-- `--phase <id>`: Phase ID (required)
+- `--phase <id>`: Phase ID (optional if active phase is set via `vault tracker --phase`)
 - `--title <title>`: Handoff title
 - `--session <id>`: Session ID
 - `--content <text>`: Content
@@ -321,6 +324,25 @@ copilot-memory vault prune --research --phase <phase-id> --days 90
 - `--dry-run`: Preview without deleting
 - `--research`: Prune research notes
 - `--phase <id>`: Target specific phase
+
+#### `vault tracker`
+Read/update deterministic project state used by phase commands and hooks.
+
+```bash
+copilot-memory vault tracker
+copilot-memory vault tracker --phase auth-phase
+copilot-memory vault tracker --session session-123
+copilot-memory vault tracker --clear-phase
+```
+
+### QoL Aliases
+
+Shorthand aliases are supported:
+
+- `copilot-memory h` → `copilot-memory handoff`
+- `copilot-memory r` → `copilot-memory resume`
+- `copilot-memory p` → `copilot-memory phase`
+- `copilot-memory v` → `copilot-memory vault`
 
 ### Help Command
 
@@ -531,6 +553,20 @@ export COPILOT_MEMORY_VAULT=/path/to/vault
 # Regenerate all indexes
 copilot-memory vault index
 ```
+
+## Copilot CLI Integration Notes
+
+Based on GitHub Copilot CLI docs, this project now integrates with CLI-friendly workflows through:
+
+- **Interactive + programmatic usage**: deterministic `vault tracker` state can be used from scripted `copilot -p` runs.
+- **Hooks**: use hook scripts to keep active phase/session updated:
+
+```bash
+copilot-memory vault tracker --phase "$COPILOT_PHASE_ID"
+copilot-memory vault tracker --session "$COPILOT_SESSION_ID"
+```
+
+- **Repository agent instructions**: `AGENTS.md` is included for agent-specific behavior.
 
 ### Missing folders
 

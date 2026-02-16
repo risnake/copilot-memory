@@ -158,6 +158,22 @@ export const COMMANDS = {
     ]
   },
 
+  'vault tracker': {
+    name: 'vault tracker',
+    description: 'Show or update deterministic tracker state',
+    usage: 'copilot-memory vault tracker [--phase <id>|--clear-phase|--session <id>]',
+    options: [
+      '--phase <id>            Set active phase ID',
+      '--clear-phase           Clear active phase ID',
+      '--session <id>          Set current session ID'
+    ],
+    examples: [
+      'copilot-memory vault tracker',
+      'copilot-memory vault tracker --phase auth-phase',
+      'copilot-memory vault tracker --clear-phase'
+    ]
+  },
+
   help: {
     name: 'help',
     description: 'Show help for commands',
@@ -225,6 +241,7 @@ export function listCommands() {
   output += '  vault search         Search content\n';
   output += '  vault doctor         Run health checks\n';
   output += '  vault prune          Prune old notes\n\n';
+  output += '  vault tracker        Track deterministic state\n\n';
 
   output += 'Run "copilot-memory help <command>" for detailed help.\n';
 

@@ -5,12 +5,12 @@ Complete or pause a phase with a summary handoff note.
 ## Usage
 
 ```bash
-copilot-memory phase handoff --phase {{PHASE_ID}} --title "{{TITLE}}" [options]
+copilot-memory phase handoff [--phase {{PHASE_ID}}] --title "{{TITLE}}" [options]
 ```
 
 ## Parameters
 
-- `--phase <id>`: Phase ID (required)
+- `--phase <id>`: Phase ID (optional when active phase is set via `vault tracker`)
 - `--title <title>`: Handoff title
 - `--content <text>`: Handoff content
 - `--stdin`: Read from stdin

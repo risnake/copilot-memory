@@ -3,7 +3,7 @@ import { randomUUID } from 'crypto';
 /**
  * Phase create command
  */
-export async function phaseCreateCommand(vault, args) {
+export async function phaseCreateCommand(vault, args, tracker) {
   const phaseId = args.id || randomUUID();
   const title = args.title || 'New Phase';
   const goal = args.goal || '';
@@ -15,6 +15,10 @@ export async function phaseCreateCommand(vault, args) {
     status: 'planned',
     tags: args.tags || []
   });
+
+  if (tracker) {
+    await tracker.setActivePhase(phaseId);
+  }
 
   return {
     success: true,
@@ -30,14 +34,14 @@ export async function phaseCreateCommand(vault, args) {
 /**
  * Phase research command
  */
-export async function phaseResearchCommand(vault, args) {
-  const phaseId = args.phaseId || args.phase;
+export async function phaseResearchCommand(vault, args, tracker) {
+  const phaseId = await (tracker?.resolvePhaseId(args.phaseId || args.phase) ?? (args.phaseId || args.phase));
   const title = args.title || 'Research Notes';
   
   if (!phaseId) {
     return {
       success: false,
-      message: 'Phase ID is required'
+      message: 'Phase ID is required (pass --phase or set active phase with "copilot-memory vault tracker --phase <id>")'
     };
   }
 
@@ -78,15 +82,15 @@ export async function phaseResearchCommand(vault, args) {
 /**
  * Phase handoff command
  */
-export async function phaseHandoffCommand(vault, args) {
-  const phaseId = args.phaseId || args.phase;
+export async function phaseHandoffCommand(vault, args, tracker) {
+  const phaseId = await (tracker?.resolvePhaseId(args.phaseId || args.phase) ?? (args.phaseId || args.phase));
   const sessionId = args.sessionId || args.session;
   const title = args.title || 'Phase Handoff';
 
   if (!phaseId) {
     return {
       success: false,
-      message: 'Phase ID is required'
+      message: 'Phase ID is required (pass --phase or set active phase with "copilot-memory vault tracker --phase <id>")'
     };
   }
 
@@ -146,11 +150,11 @@ export async function phaseCommand(vault, args) {
 
   switch (subcommand) {
     case 'create':
-      return await phaseCreateCommand(vault, subArgs);
+      return await phaseCreateCommand(vault, subArgs, args.tracker);
     case 'research':
-      return await phaseResearchCommand(vault, subArgs);
+      return await phaseResearchCommand(vault, subArgs, args.tracker);
     case 'handoff':
-      return await phaseHandoffCommand(vault, subArgs);
+      return await phaseHandoffCommand(vault, subArgs, args.tracker);
     default:
       return {
         success: false,

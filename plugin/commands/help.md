@@ -37,6 +37,6 @@ copilot-memory help vault
 - phase create, phase research, phase handoff
 
 **Vault Commands:**
-- vault index, vault search, vault doctor, vault prune
+- vault index, vault search, vault doctor, vault prune, vault tracker
 
 Use `copilot-memory help <command>` for detailed usage.

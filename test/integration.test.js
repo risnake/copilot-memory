@@ -8,6 +8,7 @@ import { VaultService } from '../src/services/vault.js';
 import { IndexService } from '../src/services/index.js';
 import { DoctorService } from '../src/services/doctor.js';
 import { PruneService } from '../src/services/prune.js';
+import { TrackerService } from '../src/services/tracker.js';
 import { initCommand } from '../src/commands/init.js';
 import { phaseCommand } from '../src/commands/phase.js';
 import { vaultCommand } from '../src/commands/memory.js';
@@ -835,6 +836,58 @@ describe('Vault Command Routing', () => {
 
     assert.strictEqual(result.success, false);
     assert.ok(result.message.includes('Query is required'));
+  });
+
+  test('should route to vault tracker', async () => {
+    const tracker = new TrackerService(config);
+    const result = await vaultCommand(indexService, doctorService, pruneService, vault, tracker, {
+      _: ['tracker'],
+      phase: 'phase-abc'
+    });
+
+    assert.ok(result.success);
+    assert.ok(result.message.includes('Active phase set'));
+    assert.strictEqual(result.tracker.active_phase_id, 'phase-abc');
+  });
+});
+
+describe('Deterministic Tracker', () => {
+  let config, adapter, vault, tracker;
+
+  beforeEach(async () => {
+    await rm(TEST_VAULT, { recursive: true, force: true });
+    await mkdir(TEST_VAULT, { recursive: true });
+
+    config = new Config({ vaultPath: TEST_VAULT, useNotesmd: false });
+    adapter = new FilesystemAdapter(config);
+    vault = new VaultService(config, adapter);
+    tracker = new TrackerService(config);
+
+    await vault.initialize();
+  });
+
+  afterEach(async () => {
+    await rm(TEST_VAULT, { recursive: true, force: true });
+  });
+
+  test('phase create should set active phase for deterministic routing', async () => {
+    const created = await phaseCommand(vault, {
+      _: ['create'],
+      title: 'Tracked Phase',
+      goal: 'Goal',
+      tracker
+    });
+
+    const research = await phaseCommand(vault, {
+      _: ['research'],
+      title: 'Research without explicit phase',
+      content: 'Findings',
+      tracker
+    });
+
+    assert.ok(created.success);
+    assert.ok(research.success);
+    assert.strictEqual(research.note.phaseId, created.phase.id);
   });
 });
 

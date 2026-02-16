@@ -5,12 +5,12 @@ Add research notes to a phase for documentation and reference.
 ## Usage
 
 ```bash
-copilot-memory phase research --phase {{PHASE_ID}} --title "{{TITLE}}" [options]
+copilot-memory phase research [--phase {{PHASE_ID}}] --title "{{TITLE}}" [options]
 ```
 
 ## Parameters
 
-- `--phase <id>`: Phase ID (required)
+- `--phase <id>`: Phase ID (optional when active phase is set via `vault tracker`)
 - `--title <title>`: Research title
 - `--content <text>`: Research content
 - `--stdin`: Read from stdin
