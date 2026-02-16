@@ -1,0 +1,7 @@
+node_modules/
+.copilot-memory-vault/
+*.log
+.DS_Store
+.env
+test-vault/
+coverage/

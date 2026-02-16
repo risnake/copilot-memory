@@ -1,0 +1,27 @@
+{
+  "name": "copilot-memory",
+  "version": "1.0.0",
+  "description": "Memory management system for GitHub Copilot CLI using Obsidian-compatible Markdown",
+  "type": "module",
+  "main": "src/index.js",
+  "bin": {
+    "copilot-memory": "./bin/copilot-memory.js"
+  },
+  "scripts": {
+    "test": "node --test test/*.test.js",
+    "test:watch": "node --test --watch test/*.test.js",
+    "plugin:pack": "node scripts/pack-plugin.js"
+  },
+  "keywords": [
+    "copilot",
+    "memory",
+    "markdown",
+    "obsidian",
+    "cli"
+  ],
+  "author": "",
+  "license": "MIT",
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}

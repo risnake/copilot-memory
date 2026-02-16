@@ -1,0 +1,65 @@
+{
+  "name": "copilot-memory",
+  "version": "1.0.0",
+  "description": "Memory management system for GitHub Copilot CLI using Obsidian-compatible Markdown",
+  "publisher": "copilot-memory",
+  "repository": "https://github.com/yourusername/copilot-memory",
+  "license": "MIT",
+  "commands": [
+    {
+      "name": "init",
+      "description": "Initialize a new memory vault",
+      "command": "./plugin/commands/init.md"
+    },
+    {
+      "name": "handoff",
+      "description": "Create a new handoff note",
+      "command": "./plugin/commands/handoff.md"
+    },
+    {
+      "name": "resume",
+      "description": "Resume from the latest handoff",
+      "command": "./plugin/commands/resume.md"
+    },
+    {
+      "name": "help",
+      "description": "Display help information",
+      "command": "./plugin/commands/help.md"
+    },
+    {
+      "name": "phase-create",
+      "description": "Create a new phase",
+      "command": "./plugin/commands/phase-create.md"
+    },
+    {
+      "name": "phase-research",
+      "description": "Create a research note for a phase",
+      "command": "./plugin/commands/phase-research.md"
+    },
+    {
+      "name": "phase-handoff",
+      "description": "Create a handoff note for a phase",
+      "command": "./plugin/commands/phase-handoff.md"
+    },
+    {
+      "name": "vault-index",
+      "description": "Regenerate vault indexes",
+      "command": "./plugin/commands/vault-index.md"
+    },
+    {
+      "name": "vault-search",
+      "description": "Search vault content",
+      "command": "./plugin/commands/vault-search.md"
+    },
+    {
+      "name": "vault-doctor",
+      "description": "Run vault health checks",
+      "command": "./plugin/commands/vault-doctor.md"
+    },
+    {
+      "name": "vault-prune",
+      "description": "Prune old notes",
+      "command": "./plugin/commands/vault-prune.md"
+    }
+  ]
+}
