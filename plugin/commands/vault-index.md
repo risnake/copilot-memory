@@ -1,3 +1,8 @@
+---
+name: vault-index
+description: Regenerate all vault indexes for quick access and navigation
+---
+
 # Vault Index Command
 
 Regenerate all vault indexes for quick access and navigation.

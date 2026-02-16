@@ -1,3 +1,8 @@
+---
+name: resume
+description: Resume from the latest handoff note
+---
+
 # Resume Command
 
 Resume from the latest handoff note.

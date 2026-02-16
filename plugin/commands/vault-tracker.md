@@ -1,3 +1,8 @@
+---
+name: vault-tracker
+description: Show or update deterministic project tracking state
+---
+
 # Vault Tracker Command
 
 Show or update deterministic project tracking state.

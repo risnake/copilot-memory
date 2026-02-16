@@ -1,3 +1,8 @@
+---
+name: init
+description: Initialize a vault or start a new project with onboarding
+---
+
 # Init Command
 
 Initialize a vault or start a new project with onboarding.

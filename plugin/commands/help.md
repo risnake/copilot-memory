@@ -1,3 +1,8 @@
+---
+name: help
+description: Show command help and usage information
+---
+
 # Help Command
 
 Show command help and usage information.

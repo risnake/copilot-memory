@@ -2,7 +2,7 @@
   "name": "copilot-memory-marketplace",
   "metadata": {
     "description": "Marketplace for copilot-memory plugin",
-    "version": "1.0.1"
+    "version": "1.0.2"
   },
   "owner": {
     "name": "copilot-memory",
@@ -13,7 +13,7 @@
       "name": "copilot-memory",
       "source": "./plugin",
       "description": "Memory management system for GitHub Copilot CLI",
-      "version": "1.0.1"
+      "version": "1.0.2"
     }
   ]
 }

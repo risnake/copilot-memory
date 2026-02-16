@@ -1,3 +1,8 @@
+---
+name: phase-research
+description: Add research notes to a phase for documentation and reference
+---
+
 # Phase Research Command
 
 Add research notes to a phase for documentation and reference.

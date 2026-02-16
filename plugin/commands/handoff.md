@@ -1,3 +1,8 @@
+---
+name: handoff
+description: Create a handoff note to capture work state and enable smooth session transitions
+---
+
 # Handoff Command
 
 Create a handoff note to capture work state and enable smooth session transitions.

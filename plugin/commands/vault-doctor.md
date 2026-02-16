@@ -1,3 +1,8 @@
+---
+name: vault-doctor
+description: Run health checks on the vault structure and notes
+---
+
 # Vault Doctor Command
 
 Run health checks on the vault structure and notes.

@@ -1,3 +1,8 @@
+---
+name: phase-create
+description: Create a new phase with organized directory structure
+---
+
 # Phase Create Command
 
 Create a new phase with organized directory structure.

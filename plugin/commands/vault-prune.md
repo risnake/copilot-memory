@@ -1,3 +1,8 @@
+---
+name: vault-prune
+description: Prune old notes to keep the vault manageable
+---
+
 # Vault Prune Command
 
 Prune old notes to keep the vault manageable.

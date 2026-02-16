@@ -1,3 +1,8 @@
+---
+name: phase-handoff
+description: Complete or pause a phase with a summary handoff note
+---
+
 # Phase Handoff Command
 
 Complete or pause a phase with a summary handoff note.

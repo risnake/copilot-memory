@@ -1,3 +1,8 @@
+---
+name: vault-search
+description: Search for content across all vault notes
+---
+
 # Vault Search Command
 
 Search for content across all vault notes.
