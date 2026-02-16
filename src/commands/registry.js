@@ -240,7 +240,7 @@ export function listCommands() {
   output += '  vault index          Regenerate indexes\n';
   output += '  vault search         Search content\n';
   output += '  vault doctor         Run health checks\n';
-  output += '  vault prune          Prune old notes\n\n';
+  output += '  vault prune          Prune old notes\n';
   output += '  vault tracker        Track deterministic state\n\n';
 
   output += 'Run "copilot-memory help <command>" for detailed help.\n';

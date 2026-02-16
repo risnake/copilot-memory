@@ -32,7 +32,7 @@ export async function handoffCommand(vault, args) {
   });
 
   if (args.tracker) {
-    await args.tracker.setSession(sessionId || null);
+    await args.tracker.setSession(note.frontmatter.session_id || null);
     await args.tracker.recordHandoff(note);
     if (phaseId) {
       await args.tracker.setActivePhase(phaseId);

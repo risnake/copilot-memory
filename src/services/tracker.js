@@ -1,4 +1,4 @@
-import { mkdir, readFile, writeFile } from 'fs/promises';
+import { mkdir, open, readFile, stat, unlink, writeFile } from 'fs/promises';
 
 /**
  * Deterministic project tracker state
@@ -10,6 +10,10 @@ export class TrackerService {
 
   get statePath() {
     return this.config.getPath('indexes', 'tracker-state.json');
+  }
+
+  get lockPath() {
+    return this.config.getPath('indexes', 'tracker-state.lock');
   }
 
   _defaultState() {
@@ -33,30 +37,31 @@ export class TrackerService {
   }
 
   async saveState(nextState) {
-    const state = {
-      ...this._defaultState(),
-      ...nextState,
-      updated_at: new Date().toISOString()
-    };
     await mkdir(this.config.getPath('indexes'), { recursive: true });
-    await writeFile(this.statePath, JSON.stringify(state, null, 2) + '\n', 'utf-8');
-    return state;
+    await this._withLock(async () => {
+      const current = await this.getState();
+      const state = {
+        ...this._defaultState(),
+        ...current,
+        ...nextState,
+        updated_at: new Date().toISOString()
+      };
+      await writeFile(this.statePath, JSON.stringify(state, null, 2) + '\n', 'utf-8');
+      return state;
+    });
+    return this.getState();
   }
 
   async setActivePhase(phaseId) {
-    const state = await this.getState();
-    return this.saveState({ ...state, active_phase_id: phaseId || null });
+    return this.saveState({ active_phase_id: phaseId || null });
   }
 
   async setSession(sessionId) {
-    const state = await this.getState();
-    return this.saveState({ ...state, current_session_id: sessionId || null });
+    return this.saveState({ current_session_id: sessionId || null });
   }
 
   async recordHandoff(note) {
-    const state = await this.getState();
     return this.saveState({
-      ...state,
       latest_handoff_path: note?.path || null,
       latest_handoff_id: note?.frontmatter?.id || null
     });
@@ -66,6 +71,34 @@ export class TrackerService {
     if (explicitPhaseId) return explicitPhaseId;
     const state = await this.getState();
     return state.active_phase_id || null;
+  }
+
+  async _withLock(fn, retries = 100, waitMs = 20) {
+    for (let i = 0; i < retries; i++) {
+      try {
+        const handle = await open(this.lockPath, 'wx');
+        try {
+          return await fn();
+        } finally {
+          await handle.close();
+          await unlink(this.lockPath).catch(() => {});
+        }
+      } catch (error) {
+        if (error.code !== 'EEXIST') {
+          throw error;
+        }
+        if (i === retries - 1) {
+          throw new Error('Tracker state is busy, try again');
+        }
+        try {
+          const lockStats = await stat(this.lockPath);
+          if (Date.now() - lockStats.mtimeMs > 30_000) {
+            await unlink(this.lockPath).catch(() => {});
+          }
+        } catch {}
+        await new Promise(resolve => setTimeout(resolve, waitMs));
+      }
+    }
   }
 }
 
