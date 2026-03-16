@@ -1,0 +1,19 @@
+{
+  "version": 1,
+  "hooks": {
+    "sessionStart": [
+      {
+        "type": "command",
+        "bash": "copilot-memory resume 2>/dev/null || true",
+        "timeoutSec": 10
+      }
+    ],
+    "sessionEnd": [
+      {
+        "type": "command",
+        "bash": "copilot-memory handoff --title \"Auto-handoff: session end\" --content \"Session ended. Context auto-captured.\" 2>/dev/null || true",
+        "timeoutSec": 10
+      }
+    ]
+  }
+}

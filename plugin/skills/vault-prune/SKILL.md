@@ -1,9 +1,9 @@
 ---
 name: vault-prune
-description: Prune old notes to keep the vault manageable
+description: Prune old notes by age threshold to keep the vault manageable
 ---
 
-# Vault Prune Command
+# Prune Old Notes
 
 Prune old notes to keep the vault manageable.
 
@@ -19,10 +19,10 @@ copilot-memory vault prune --days {{DAYS}}
 
 ## Parameters
 
-- `--days <n>`: Age threshold in days (default: 30)
-- `--dry-run`: Preview without deleting
-- `--research`: Prune research notes
-- `--phase <id>`: Target specific phase research
+- `--days <n>` — Age threshold in days (default: 30)
+- `--dry-run` — Preview without deleting
+- `--research` — Prune research notes
+- `--phase <id>` — Target specific phase research
 
 ## Default Behavior
 
@@ -47,16 +47,4 @@ copilot-memory vault prune --research --days 120
 copilot-memory vault prune --research --phase abc123 --days 90
 ```
 
-## Output
-
-```bash
-$ copilot-memory vault prune --days 60 --dry-run
-✓ Would delete 15 notes older than 60 days
-
-Summary:
-  Candidates: 15
-  Deleted: 0
-  Errors: 0
-```
-
-⚠️ **Warning**: Pruning is permanent. Always use `--dry-run` first.
+**Warning**: Pruning is permanent. Always use `--dry-run` first.

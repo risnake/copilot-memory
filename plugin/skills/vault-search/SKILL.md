@@ -1,9 +1,9 @@
 ---
 name: vault-search
-description: Search for content across all vault notes
+description: Search for content across all vault notes using full-text search
 ---
 
-# Vault Search Command
+# Search Vault Content
 
 Search for content across all vault notes.
 
@@ -15,9 +15,9 @@ copilot-memory vault search "{{QUERY}}" [options]
 
 ## Parameters
 
-- `query`: Search query (required)
-- `--case`: Case-sensitive search
-- `--dir <path>`: Search specific directory
+- `query` — Search query (required)
+- `--case` — Case-sensitive search
+- `--dir <path>` — Search specific directory
 
 ## Examples
 
@@ -38,7 +38,7 @@ Returns matching notes with file path, match count, and context preview:
 
 ```bash
 $ copilot-memory vault search "JWT"
-✓ Found 3 matches
+Found 3 matches
 
 Results:
   phases/auth-001/research/20240115-120000Z--research--phase--jwt.md

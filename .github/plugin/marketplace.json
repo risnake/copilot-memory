@@ -2,7 +2,7 @@
   "name": "copilot-memory-marketplace",
   "metadata": {
     "description": "Marketplace for copilot-memory plugin",
-    "version": "1.0.2"
+    "version": "2.0.0"
   },
   "owner": {
     "name": "copilot-memory",
@@ -12,8 +12,10 @@
     {
       "name": "copilot-memory",
       "source": "./plugin",
-      "description": "Memory management system for GitHub Copilot CLI",
-      "version": "1.0.2"
+      "description": "Persistent context management for GitHub Copilot CLI — handoffs, phases, research notes, and vault health",
+      "version": "2.0.0",
+      "keywords": ["memory", "context", "handoff", "obsidian", "markdown", "vault"],
+      "category": "productivity"
     }
   ]
 }
