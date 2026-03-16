@@ -1053,8 +1053,11 @@ describe('Plugin Structure', () => {
   }
 
   test('no extra or missing skill directories', async () => {
-    const entries = await readdir(join(PLUGIN_DIR, 'skills'));
-    const dirs = entries.sort();
+    const entries = await readdir(join(PLUGIN_DIR, 'skills'), { withFileTypes: true });
+    const dirs = entries
+      .filter(e => e.isDirectory() && !e.name.startsWith('.'))
+      .map(e => e.name)
+      .sort();
     assert.deepStrictEqual(dirs, [...expectedSkills].sort());
   });
 

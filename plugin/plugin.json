@@ -5,7 +5,7 @@
   "author": {
     "name": "copilot-memory"
   },
-  "repository": "https://github.com/yourusername/copilot-memory",
+  "repository": "https://github.com/risnake/copilot-memory",
   "license": "MIT",
   "keywords": ["memory", "context", "handoff", "obsidian", "markdown", "vault"],
   "category": "productivity",
