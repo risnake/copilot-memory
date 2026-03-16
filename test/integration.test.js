@@ -1,7 +1,8 @@
 import { test, describe, beforeEach, afterEach } from 'node:test';
 import assert from 'node:assert';
-import { rm, mkdir } from 'fs/promises';
-import { join } from 'path';
+import { rm, mkdir, readFile, access, readdir } from 'fs/promises';
+import { join, dirname } from 'path';
+import { fileURLToPath } from 'url';
 import { Config } from '../src/config.js';
 import { FilesystemAdapter } from '../src/adapters/filesystem.js';
 import { VaultService } from '../src/services/vault.js';
@@ -1003,5 +1004,87 @@ describe('Legacy Continous Commands', () => {
     });
 
     assert.ok(brownfield.path.includes('sessions/'));
+  });
+});
+
+// ── Plugin Structure Validation ──────────────────────────────────────────────
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
+const PLUGIN_DIR = join(__dirname, '..', 'plugin');
+
+describe('Plugin Structure', () => {
+  test('plugin.json exists and has required fields', async () => {
+    const raw = await readFile(join(PLUGIN_DIR, 'plugin.json'), 'utf-8');
+    const manifest = JSON.parse(raw);
+
+    assert.strictEqual(manifest.name, 'copilot-memory');
+    assert.ok(manifest.description);
+    assert.ok(manifest.version);
+    assert.strictEqual(manifest.agents, 'agents/');
+    assert.strictEqual(manifest.skills, 'skills/');
+    assert.strictEqual(manifest.hooks, 'hooks.json');
+  });
+
+  test('agents/memory.agent.md exists with valid frontmatter', async () => {
+    const content = await readFile(join(PLUGIN_DIR, 'agents', 'memory.agent.md'), 'utf-8');
+
+    // Has YAML frontmatter delimiters
+    assert.ok(content.startsWith('---'));
+    assert.ok(content.includes('name:'));
+    assert.ok(content.includes('description:'));
+    assert.ok(content.includes('tools:'));
+  });
+
+  const expectedSkills = [
+    'init', 'handoff', 'resume',
+    'phase-create', 'phase-research', 'phase-handoff',
+    'vault-index', 'vault-search', 'vault-doctor', 'vault-prune', 'vault-tracker'
+  ];
+
+  for (const skill of expectedSkills) {
+    test(`skills/${skill}/SKILL.md exists with valid frontmatter`, async () => {
+      const content = await readFile(join(PLUGIN_DIR, 'skills', skill, 'SKILL.md'), 'utf-8');
+
+      assert.ok(content.startsWith('---'), `${skill} SKILL.md should start with frontmatter`);
+      assert.ok(content.includes('name:'), `${skill} SKILL.md should have name field`);
+      assert.ok(content.includes('description:'), `${skill} SKILL.md should have description field`);
+    });
+  }
+
+  test('no extra or missing skill directories', async () => {
+    const entries = await readdir(join(PLUGIN_DIR, 'skills'), { withFileTypes: true });
+    const dirs = entries
+      .filter(e => e.isDirectory() && !e.name.startsWith('.'))
+      .map(e => e.name)
+      .sort();
+    assert.deepStrictEqual(dirs, [...expectedSkills].sort());
+  });
+
+  test('hooks.json exists with valid format', async () => {
+    const raw = await readFile(join(PLUGIN_DIR, 'hooks.json'), 'utf-8');
+    const hooks = JSON.parse(raw);
+
+    assert.strictEqual(hooks.version, 1);
+    assert.ok(hooks.hooks);
+    assert.ok(Array.isArray(hooks.hooks.sessionStart));
+    assert.ok(Array.isArray(hooks.hooks.sessionEnd));
+
+    // Each hook should have type and bash fields
+    for (const hook of hooks.hooks.sessionStart) {
+      assert.strictEqual(hook.type, 'command');
+      assert.ok(hook.bash);
+    }
+    for (const hook of hooks.hooks.sessionEnd) {
+      assert.strictEqual(hook.type, 'command');
+      assert.ok(hook.bash);
+    }
+  });
+
+  test('old commands/ directory does not exist', async () => {
+    await assert.rejects(
+      access(join(PLUGIN_DIR, 'commands')),
+      'plugin/commands/ should not exist after migration'
+    );
   });
 });

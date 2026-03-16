@@ -9,7 +9,7 @@
   "license": "MIT",
   "keywords": ["memory", "context", "handoff", "obsidian", "markdown", "vault"],
   "category": "productivity",
-  "agents": "./plugin/agents/",
-  "skills": "./plugin/skills/",
-  "hooks": "./plugin/hooks.json"
+  "agents": "agents/",
+  "skills": "skills/",
+  "hooks": "hooks.json"
 }

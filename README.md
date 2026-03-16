@@ -30,19 +30,23 @@ npm install -g .
 npm link
 ```
 
-### As a Copilot Plugin
+### As a Copilot CLI Plugin
 
 ```bash
-# Install the plugin
-copilot plugin install /path/to/copilot-memory/plugin
+# Install from local path
+copilot plugin install ./plugin
 
-# Use commands
-copilot copilot-memory init
-copilot copilot-memory handoff --title "Work Complete"
-copilot copilot-memory resume
-copilot copilot-memory phase create --title "Auth"
-copilot copilot-memory vault search "bug"
+# Install from GitHub repository
+copilot plugin install OWNER/copilot-memory
+
+# Verify installation
+copilot plugin list
 ```
+
+The plugin provides:
+- **Agent** (`memory.agent.md`): A context management agent that knows how to use all copilot-memory commands
+- **Skills** (11 skills): Each command is a skill that Copilot loads when relevant to your task
+- **Hooks**: `sessionStart` auto-resumes from the latest handoff; `sessionEnd` auto-creates a handoff
 
 ## Quick Start
 
@@ -464,12 +468,18 @@ copilot-memory/
 │   │   └── registry.js          # Command registry
 │   └── utils/
 │       └── frontmatter.js       # Frontmatter utilities
-├── plugin/                       # Copilot plugin commands
-│   ├── handoff.md
-│   ├── continuous-resume.md
-│   └── ...
+├── plugin/                       # Copilot CLI plugin
+│   ├── plugin.json              # Plugin manifest
+│   ├── agents/
+│   │   └── memory.agent.md      # Memory management agent
+│   ├── skills/                  # 11 skill definitions
+│   │   ├── init/SKILL.md
+│   │   ├── handoff/SKILL.md
+│   │   ├── resume/SKILL.md
+│   │   └── ...
+│   └── hooks.json               # Lifecycle hooks (sessionStart, sessionEnd)
 ├── .github/plugin/
-│   ├── plugin.json              # Plugin metadata
+│   ├── plugin.json              # Root plugin metadata
 │   └── marketplace.json         # Marketplace metadata
 ├── test/
 │   └── integration.test.js      # Integration tests
@@ -554,19 +564,25 @@ export COPILOT_MEMORY_VAULT=/path/to/vault
 copilot-memory vault index
 ```
 
-## Copilot CLI Integration Notes
+## Copilot CLI Integration
 
-Based on GitHub Copilot CLI docs, this project now integrates with CLI-friendly workflows through:
+This project integrates with GitHub Copilot CLI using the modern plugin architecture:
 
-- **Interactive + programmatic usage**: deterministic `vault tracker` state can be used from scripted `copilot -p` runs.
-- **Hooks**: use hook scripts to keep active phase/session updated:
+- **Plugin**: Install via `copilot plugin install ./plugin` — provides an agent, 11 skills, and lifecycle hooks
+- **Agent**: `memory.agent.md` teaches Copilot how to use copilot-memory for persistent context
+- **Skills**: Each command (init, handoff, resume, phase-*, vault-*) is a skill Copilot loads when relevant
+- **Hooks**: `sessionStart` auto-resumes context; `sessionEnd` auto-creates handoffs
+- **Deterministic state**: `vault tracker` stores active phase/session in JSON for scripting and hooks
+- **Agent instructions**: `AGENTS.md` is included for Copilot coding agent behavior
+
+### Manual Hook Setup (without plugin)
+
+If using copilot-memory without the plugin, add hooks manually:
 
 ```bash
 copilot-memory vault tracker --phase "$COPILOT_PHASE_ID"
 copilot-memory vault tracker --session "$COPILOT_SESSION_ID"
 ```
-
-- **Repository agent instructions**: `AGENTS.md` is included for agent-specific behavior.
 
 ### Missing folders
 

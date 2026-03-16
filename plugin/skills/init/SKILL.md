@@ -1,11 +1,11 @@
 ---
 name: init
-description: Initialize a vault or start a new project with onboarding
+description: Initialize a copilot-memory vault or start a new project with onboarding (greenfield or brownfield mode)
 ---
 
-# Init Command
+# Initialize Vault
 
-Initialize a vault or start a new project with onboarding.
+Initialize a copilot-memory vault or start a new project with onboarding.
 
 ## Usage
 
@@ -23,11 +23,11 @@ copilot-memory init --mode brownfield [--path <codebase-path>]
 ## Options
 
 **Global:**
-- `--vault <path>` — Vault location (default: `.copilot-memory-vault`, or set via `COPILOT_MEMORY_VAULT` env var)
+- `--vault <path>` — Vault location (default: `.copilot-memory-vault`, or `COPILOT_MEMORY_VAULT` env)
 
 **Greenfield Mode:**
 - `--mode greenfield` — Start new project onboarding
-- `--idea <text>` — Project idea/goal (or use `--title`)
+- `--idea <text>` — Project idea/goal
 - `--stack <techs>` — Tech stack (comma-separated)
 - `--constraints <text>` — Requirements/constraints
 - `--research <questions>` — Research questions (comma-separated)
@@ -45,10 +45,6 @@ copilot-memory init --mode brownfield [--path <codebase-path>]
 ```bash
 # Bootstrap vault only
 copilot-memory init
-copilot-memory init --vault ~/my-vault
-
-# Greenfield: interactive prompts
-copilot-memory init --mode greenfield
 
 # Greenfield: with flags
 copilot-memory init --mode greenfield \
@@ -65,8 +61,6 @@ copilot-memory init --mode brownfield --path ~/my-project
 
 ## Behavior
 
-**Plain `init`:** Creates vault structure and exits. Use this for vault setup.
-
-**With `--mode greenfield`:** Gathers project requirements (interactively or via flags), generates structured planning note with phases and research questions.
-
-**With `--mode brownfield`:** Analyzes codebase structure, infers tech stack from key files, creates analysis note with exploration tasks.
+- **Plain `init`:** Creates vault structure and exits.
+- **With `--mode greenfield`:** Gathers project requirements, generates structured planning note with phases and research questions.
+- **With `--mode brownfield`:** Analyzes codebase structure, infers tech stack, creates analysis note with exploration tasks.

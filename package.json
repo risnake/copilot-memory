@@ -1,6 +1,6 @@
 {
   "name": "copilot-memory",
-  "version": "1.0.2",
+  "version": "2.0.0",
   "description": "Memory management system for GitHub Copilot CLI using Obsidian-compatible Markdown",
   "type": "module",
   "main": "src/index.js",

@@ -12,7 +12,7 @@ const pluginDir = join(rootDir, 'plugin');
 const distDir = join(rootDir, 'dist');
 
 // Read plugin metadata
-const pluginJsonPath = join(pluginDir, '.github', 'plugin', 'plugin.json');
+const pluginJsonPath = join(pluginDir, 'plugin.json');
 const pluginJson = JSON.parse(readFileSync(pluginJsonPath, 'utf-8'));
 const { name, version } = pluginJson;
 
