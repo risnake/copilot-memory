@@ -1,11 +1,11 @@
 ---
 name: phase-create
-description: Create a new development phase with organized directory structure for research and execution tracking
+description: "Create a new development phase with directory structure for research, execution, and handoff tracking. Use when the user wants to start a new phase, begin a project milestone, scaffold phase directories, or organize work into structured phases."
 ---
 
 # Create Phase
 
-Create a new development phase with organized directory structure.
+Create a new development phase with organized directory structure for research, execution, and handoff tracking.
 
 ## Usage
 
@@ -29,9 +29,18 @@ copilot-memory phase create --title "Authentication" --goal "Implement OAuth2 wi
 ## What It Creates
 
 - Phase directory at `.copilot-memory-vault/phases/{{PHASE_ID}}/`
-- `phase.md` file with frontmatter
+- `phase.md` file with frontmatter (title, goal, status, timestamps)
 - Subdirectories: `research/`, `execution/`, `handoffs/`
 - Sets the phase as active in the tracker
+
+## Verification
+
+Confirm the phase was created:
+
+```bash
+ls .copilot-memory-vault/phases/{{PHASE_ID}}/
+# Expected: phase.md  research/  execution/  handoffs/
+```
 
 ## Next Steps
 

@@ -1,11 +1,11 @@
 ---
 name: init
-description: Initialize a copilot-memory vault or start a new project with onboarding (greenfield or brownfield mode)
+description: "Initialize a copilot-memory vault or bootstrap a new project with onboarding in greenfield or brownfield mode. Use when the user wants to set up a vault, create a new project, bootstrap a workspace, get started with copilot-memory, or onboard an existing codebase."
 ---
 
 # Initialize Vault
 
-Initialize a copilot-memory vault or start a new project with onboarding.
+Initialize a copilot-memory vault or start a new project with onboarding (greenfield or brownfield mode).
 
 ## Usage
 
@@ -64,3 +64,12 @@ copilot-memory init --mode brownfield --path ~/my-project
 - **Plain `init`:** Creates vault structure and exits.
 - **With `--mode greenfield`:** Gathers project requirements, generates structured planning note with phases and research questions.
 - **With `--mode brownfield`:** Analyzes codebase structure, infers tech stack, creates analysis note with exploration tasks.
+
+## Verification
+
+Confirm initialization succeeded:
+
+```bash
+ls .copilot-memory-vault/
+# Expected: handoffs/  sessions/  phases/  indexes/  templates/
+```

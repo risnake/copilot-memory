@@ -1,11 +1,11 @@
 ---
 name: phase-research
-description: Add research notes to a phase for documentation and reference during development
+description: "Add structured research notes, findings, and references to a development phase. Use when the user wants to attach research, document findings, record investigation results, or save reference material for a specific project phase."
 ---
 
 # Add Phase Research
 
-Add research notes to a phase for documentation and reference.
+Add research notes, findings, and references to a development phase for documentation during work.
 
 ## Usage
 
