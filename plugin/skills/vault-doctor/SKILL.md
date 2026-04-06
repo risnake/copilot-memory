@@ -1,11 +1,11 @@
 ---
 name: vault-doctor
-description: Run health checks on the vault structure and notes to detect and fix issues
+description: "Run health checks on the copilot-memory vault to detect missing folders, invalid indexes, and incomplete frontmatter, with optional auto-fix. Use when the user wants to validate vault integrity, diagnose vault errors, check for broken structure, or run maintenance on their vault."
 ---
 
 # Vault Health Check
 
-Run health checks on the vault structure and notes.
+Run health checks on the vault structure and notes to detect missing folders, invalid indexes, and incomplete frontmatter.
 
 ## Usage
 
@@ -39,6 +39,13 @@ Diagnostics:
 $ copilot-memory vault doctor --fix
 Auto-fix attempted. Run doctor again to verify.
 ```
+
+## Recommended Workflow
+
+1. Run `copilot-memory vault doctor` to diagnose issues
+2. If issues found, run `copilot-memory vault doctor --fix`
+3. Run `copilot-memory vault doctor` again to verify fixes
+4. If issues persist, investigate manually
 
 ## When to Use
 
